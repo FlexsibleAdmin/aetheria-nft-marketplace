@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 interface CountdownTimerProps {
   targetDate: number | Date;
@@ -7,8 +7,7 @@ interface CountdownTimerProps {
   showLabels?: boolean;
 }
 export function CountdownTimer({ targetDate, className, size = 'md', showLabels = true }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-  function calculateTimeLeft() {
+  const calculateTimeLeft = useCallback(() => {
     const difference = +new Date(targetDate) - +new Date();
     let timeLeft = {
       days: 0,
@@ -25,13 +24,16 @@ export function CountdownTimer({ targetDate, className, size = 'md', showLabels 
       };
     }
     return timeLeft;
-  }
+  }, [targetDate]);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
+    // Update immediately when targetDate changes or component mounts
+    setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [calculateTimeLeft]);
   const pad = (n: number) => n.toString().padStart(2, '0');
   const sizeClasses = {
     sm: 'text-sm gap-2',
