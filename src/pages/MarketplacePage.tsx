@@ -1,27 +1,19 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { MarketLayout } from '@/components/layout/main-nav.tsx';
 import { FilterSidebar } from '@/components/market/filter-sidebar';
 import { NFTCard } from '@/components/ui/nft-card';
+import { MOCK_NFTS } from '@/lib/market-data';
 import { useMarketStore } from '@/store/use-market-store';
-import { SearchX, Loader2 } from 'lucide-react';
+import { SearchX } from 'lucide-react';
 export function MarketplacePage() {
   // Selectors - Primitive values only to prevent loops
-  const fetchMarketData = useMarketStore((s) => s.fetchMarketData);
-  const nfts = useMarketStore((s) => s.nfts);
-  const isLoading = useMarketStore((s) => s.isLoading);
   const priceRange = useMarketStore((s) => s.filters.priceRange);
   const categories = useMarketStore((s) => s.filters.categories);
   const status = useMarketStore((s) => s.filters.status);
   const searchQuery = useMarketStore((s) => s.searchQuery);
-  // Fetch data if empty
-  useEffect(() => {
-    if (nfts.length === 0) {
-      fetchMarketData();
-    }
-  }, [nfts.length, fetchMarketData]);
   // Filter Logic
   const filteredNFTs = useMemo(() => {
-    return nfts.filter((nft) => {
+    return MOCK_NFTS.filter((nft) => {
       // Search
       if (searchQuery && !nft.title.toLowerCase().includes(searchQuery.toLowerCase()) && !nft.collection.name.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
@@ -40,7 +32,7 @@ export function MarketplacePage() {
       }
       return true;
     });
-  }, [nfts, priceRange, categories, status, searchQuery]);
+  }, [priceRange, categories, status, searchQuery]);
   return (
     <MarketLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -52,14 +44,10 @@ export function MarketplacePage() {
             <div className="mb-6 flex items-center justify-between">
               <h1 className="text-2xl font-bold font-display">Explore Assets</h1>
               <span className="text-sm text-muted-foreground">
-                {isLoading ? 'Loading...' : `${filteredNFTs.length} results`}
+                {filteredNFTs.length} results
               </span>
             </div>
-            {isLoading && nfts.length === 0 ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : filteredNFTs.length > 0 ? (
+            {filteredNFTs.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredNFTs.map((nft) => (
                   <NFTCard key={nft.id} nft={nft} />
