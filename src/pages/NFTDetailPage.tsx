@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Share2, MoreHorizontal, Clock, Tag, Activity } from 'lucide-react';
+import { ArrowLeft, Share2, MoreHorizontal, Clock, Tag, Activity, Loader2 } from 'lucide-react';
 import { MarketLayout } from '@/components/layout/main-nav.tsx';
-import { MOCK_NFTS } from '@/lib/market-data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,8 +12,27 @@ import { useMarketStore } from '@/store/use-market-store';
 import { toast } from 'sonner';
 export function NFTDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // Selectors
   const addToCart = useMarketStore((s) => s.addToCart);
-  const nft = useMemo(() => MOCK_NFTS.find((n) => n.id === id), [id]);
+  const nfts = useMarketStore((s) => s.nfts);
+  const fetchMarketData = useMarketStore((s) => s.fetchMarketData);
+  const isLoading = useMarketStore((s) => s.isLoading);
+  // Ensure data is loaded
+  useEffect(() => {
+    if (nfts.length === 0) {
+      fetchMarketData();
+    }
+  }, [nfts.length, fetchMarketData]);
+  const nft = useMemo(() => nfts.find((n) => n.id === id), [nfts, id]);
+  if (isLoading && !nft) {
+    return (
+      <MarketLayout>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </MarketLayout>
+    );
+  }
   if (!nft) {
     return (
       <MarketLayout>
@@ -42,9 +60,9 @@ export function NFTDetailPage() {
           {/* Left Column: Image */}
           <div className="space-y-6">
             <div className="aspect-square rounded-2xl overflow-hidden border border-border bg-muted relative group">
-              <img 
-                src={nft.image} 
-                alt={nft.title} 
+              <img
+                src={nft.image}
+                alt={nft.title}
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -127,14 +145,14 @@ export function NFTDetailPage() {
             {/* Tabs */}
             <Tabs defaultValue="history" className="w-full">
               <TabsList className="w-full justify-start border-b border-border rounded-none bg-transparent h-auto p-0">
-                <TabsTrigger 
-                  value="history" 
+                <TabsTrigger
+                  value="history"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
                 >
                   History
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="description" 
+                <TabsTrigger
+                  value="description"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
                 >
                   Description

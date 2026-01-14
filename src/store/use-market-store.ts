@@ -1,16 +1,24 @@
 import { create } from 'zustand';
-import { NFT } from '@/lib/market-data';
+import { NFT, Collection } from '@/lib/market-data';
+import { api } from '@/lib/api-client';
 interface MarketFilters {
   priceRange: [number, number];
   categories: string[];
   status: ('buy_now' | 'auction')[];
 }
 interface MarketState {
+  // Data
+  nfts: NFT[];
+  collections: Collection[];
+  isLoading: boolean;
+  error: string | null;
+  // Filters & UI State
   filters: MarketFilters;
   searchQuery: string;
   cart: NFT[];
   isWalletConnected: boolean;
   // Actions
+  fetchMarketData: () => Promise<void>;
   setPriceRange: (range: [number, number]) => void;
   toggleCategory: (category: string) => void;
   toggleStatus: (status: 'buy_now' | 'auction') => void;
@@ -28,11 +36,40 @@ const INITIAL_FILTERS: MarketFilters = {
   status: [],
 };
 export const useMarketStore = create<MarketState>((set) => ({
+  // Initial Data State
+  nfts: [],
+  collections: [],
+  isLoading: false,
+  error: null,
+  // Initial UI State
   filters: INITIAL_FILTERS,
   searchQuery: '',
   cart: [],
   isWalletConnected: false,
-  setPriceRange: (range) => 
+  // Async Actions
+  fetchMarketData: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      // Fetch NFTs and Collections in parallel
+      const [nftsRes, colsRes] = await Promise.all([
+        api<{ items: NFT[]; next: string | null }>('/api/nfts'),
+        api<{ items: Collection[]; next: string | null }>('/api/collections')
+      ]);
+      set({ 
+        nfts: nftsRes.items, 
+        collections: colsRes.items, 
+        isLoading: false 
+      });
+    } catch (err: any) {
+      console.error('Failed to fetch market data:', err);
+      set({ 
+        error: err.message || 'Failed to load market data', 
+        isLoading: false 
+      });
+    }
+  },
+  // Sync Actions
+  setPriceRange: (range) =>
     set((state) => ({ filters: { ...state.filters, priceRange: range } })),
   toggleCategory: (category) =>
     set((state) => {

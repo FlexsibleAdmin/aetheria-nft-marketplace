@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, TrendingUp, Layers } from 'lucide-react';
+import { ArrowRight, Zap, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MarketLayout } from '@/components/layout/main-nav.tsx';
 import { Button } from '@/components/ui/button';
 import { NFTCard } from '@/components/ui/nft-card';
-import { MOCK_NFTS, MOCK_COLLECTIONS } from '@/lib/market-data';
+import { useMarketStore } from '@/store/use-market-store';
+import { Skeleton } from '@/components/ui/skeleton';
 export function HomePage() {
-  const featuredNFTs = MOCK_NFTS.slice(0, 4);
-  const topCollections = MOCK_COLLECTIONS;
+  // Selectors - Primitive values only
+  const fetchMarketData = useMarketStore(s => s.fetchMarketData);
+  const nfts = useMarketStore(s => s.nfts);
+  const collections = useMarketStore(s => s.collections);
+  const isLoading = useMarketStore(s => s.isLoading);
+  useEffect(() => {
+    fetchMarketData();
+  }, [fetchMarketData]);
+  const featuredNFTs = nfts.slice(0, 4);
+  const topCollections = collections.slice(0, 3);
   return (
     <MarketLayout>
       {/* Hero Section */}
@@ -41,7 +50,7 @@ export function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
             >
-              Aetheria is the premier marketplace for digital artists and collectors. 
+              Aetheria is the premier marketplace for digital artists and collectors.
               Experience the next generation of Web3 commerce.
             </motion.p>
             <motion.div
@@ -76,19 +85,31 @@ export function HomePage() {
               <Link to="/explore">View All</Link>
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredNFTs.map((nft, index) => (
-              <motion.div
-                key={nft.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <NFTCard nft={nft} />
-              </motion.div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="space-y-3">
+                  <Skeleton className="h-[300px] w-full rounded-xl" />
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredNFTs.map((nft, index) => (
+                <motion.div
+                  key={nft.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <NFTCard nft={nft} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
       {/* Top Collections */}
@@ -100,38 +121,49 @@ export function HomePage() {
             </div>
             <h2 className="text-3xl font-bold font-display">Top Collections</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {topCollections.map((col, index) => (
-              <motion.div
-                key={col.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative h-48 rounded-t-xl overflow-hidden">
-                  <img 
-                    src={col.coverImage} 
-                    alt={col.name} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="space-y-3">
+                  <Skeleton className="h-[200px] w-full rounded-t-xl" />
+                  <Skeleton className="h-[100px] w-full rounded-b-xl" />
                 </div>
-                <div className="bg-card border border-t-0 border-border rounded-b-xl p-6 hover:border-primary/50 transition-colors">
-                  <h3 className="text-xl font-bold mb-2">{col.name}</h3>
-                  <div className="flex justify-between text-sm">
-                    <div className="text-muted-foreground">
-                      Floor: <span className="text-foreground font-medium">{col.floorPrice} ETH</span>
-                    </div>
-                    <div className="text-muted-foreground">
-                      Vol: <span className="text-foreground font-medium">{col.volume} ETH</span>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {topCollections.map((col, index) => (
+                <motion.div
+                  key={col.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative h-48 rounded-t-xl overflow-hidden">
+                    <img
+                      src={col.coverImage}
+                      alt={col.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
+                  </div>
+                  <div className="bg-card border border-t-0 border-border rounded-b-xl p-6 hover:border-primary/50 transition-colors">
+                    <h3 className="text-xl font-bold mb-2">{col.name}</h3>
+                    <div className="flex justify-between text-sm">
+                      <div className="text-muted-foreground">
+                        Floor: <span className="text-foreground font-medium">{col.floorPrice} ETH</span>
+                      </div>
+                      <div className="text-muted-foreground">
+                        Vol: <span className="text-foreground font-medium">{col.volume} ETH</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </MarketLayout>
