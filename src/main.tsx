@@ -13,6 +13,7 @@ import '@/index.css'
 import { HomePage } from '@/pages/HomePage'
 import { MarketplacePage } from '@/pages/MarketplacePage'
 import { NFTDetailPage } from '@/pages/NFTDetailPage'
+import { DropsPage } from '@/pages/DropsPage'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +23,11 @@ const router = createBrowserRouter([
   {
     path: "/explore",
     element: <MarketplacePage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/drops",
+    element: <DropsPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
