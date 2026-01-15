@@ -37,11 +37,9 @@ export function HomePage() {
               <span className="inline-block py-1 px-3 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-6">
                 The Future of Digital Ownership
               </span>
-              <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60">
-                Discover, Collect, & Sell <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-cyan-500">
-                  Extraordinary NFTs
-                </span>
+              <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight mb-6">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60">I </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-cyan-500">love you</span>
               </h1>
             </motion.div>
             <motion.p
