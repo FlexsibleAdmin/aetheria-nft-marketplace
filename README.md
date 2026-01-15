@@ -1,6 +1,6 @@
 # Aetheria NFT Marketplace
 
-[aureliabutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/FlexsibleAdmin/aetheria-nft-marketplace)
 
 A visually stunning, high-performance NFT marketplace featuring advanced filtering, immersive product showcases, and a seamless digital collecting experience. Designed with a "Cyber-Noir" aesthetic, Aetheria prioritizes visual hierarchy, utilizing high-quality imagery and negative space to showcase digital artwork effectively.
 
@@ -79,7 +79,7 @@ This project is configured to deploy directly to Cloudflare Workers.
 
 ### One-Click Deployment
 
-[aureliabutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/FlexsibleAdmin/aetheria-nft-marketplace)
 
 ### Manual Deployment
 
