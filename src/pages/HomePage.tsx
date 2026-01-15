@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { MarketLayout } from '@/components/layout/main-nav.tsx';
+import { MarketLayout } from '@/components/layout/main-nav';
 import { Button } from '@/components/ui/button';
 import { NFTCard } from '@/components/ui/nft-card';
 import { useMarketStore } from '@/store/use-market-store';
@@ -50,7 +50,7 @@ export function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
             >
-              Aetheria is the premier marketplace for digital artists and collectors.
+              I Love You is the premier marketplace for digital artists and collectors.
               Experience the next generation of Web3 commerce.
             </motion.p>
             <motion.div

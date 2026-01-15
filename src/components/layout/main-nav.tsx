@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, Wallet, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Wallet, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -28,10 +28,10 @@ export function MainNav() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-cyan-500 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
+              <span className="text-white font-bold text-lg">I</span>
             </div>
             <span className="font-display font-bold text-xl hidden sm:inline-block tracking-tight">
-              Aetheria
+              I Love You
             </span>
           </Link>
           {/* Desktop Nav */}
@@ -72,8 +72,8 @@ export function MainNav() {
               )}
             </Button>
             {isWalletConnected ? (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="hidden sm:flex border-violet-500/50 text-violet-500 hover:bg-violet-500/10"
                 onClick={disconnectWallet}
               >
@@ -81,7 +81,7 @@ export function MainNav() {
                 0x71...3A9
               </Button>
             ) : (
-              <Button 
+              <Button
                 className="hidden sm:flex bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 text-white border-0"
                 onClick={connectWallet}
               >
@@ -119,7 +119,7 @@ export function MainNav() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
-                  <Button 
+                  <Button
                     className="w-full bg-gradient-to-r from-violet-600 to-cyan-600 text-white"
                     onClick={isWalletConnected ? disconnectWallet : connectWallet}
                   >
@@ -135,6 +135,9 @@ export function MainNav() {
   );
 }
 export function MarketLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    document.title = "I Love You";
+  }, []);
   return (
     <div className="min-h-screen bg-background font-sans antialiased selection:bg-violet-500/30">
       <MainNav />
@@ -144,7 +147,7 @@ export function MarketLayout({ children }: { children: React.ReactNode }) {
       <footer className="border-t border-border/40 py-8 mt-12 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
           <p>Built with ❤️ by Aurelia | Your AI Co-founder</p>
-          <p className="mt-2">&copy; 2024 Aetheria NFT Market. All rights reserved.</p>
+          <p className="mt-2">&copy; 2024 I Love You. All rights reserved.</p>
         </div>
       </footer>
     </div>
